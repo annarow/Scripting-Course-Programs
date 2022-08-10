@@ -1,0 +1,35 @@
+#! /bin/perl -a -F'/' -nl
+
+
+($artist, $album, $track) = ($F[2], $F[3], $F[$#F]);
+$nalbums{$artist} += !(${"$artist/$album"}++);
+$paths{"$artist/$album/$track"} = $_;
+
+END {
+   print "<html>";
+   print qq( <meta http-equiv="content-type" content="text/html; charset=utf-8" />);
+   print "<body>";
+   print qq(<table border="1">);
+   print " <tr>";
+   print "  <th>Artist</th>";
+   print "  <th>Album</th>";
+   print "  <th>Tracks</th>";
+   print " </tr>";
+   #$dummy = 3;
+   for (sort keys %paths) {
+      ($count = $nalbums{$artist});
+           
+      ($artist, $album, $track) = split /\//, $_; 
+      print "   </table>\n  </td>\n </tr>" if ($artist ne $prev_artist and $dummy eq 4);      
+      print qq( <tr>\n  <td rowspan="$nalbums{$artist}">$artist</td>) if ($artist ne $prev_artist);
+      print "   </table>\n  </td>\n </tr>" if ($artist eq $prev_artist and $album ne $prev_album);
+      print " <tr>" if ($artist eq $prev_artist and $album ne $prev_album);
+      print "  <td>", $album, "</td>", "\n  <td>\n   <table border=0>" if ($album ne $prev_album);
+      print qq(    <tr><td><a href="$_">), $track, "</a></tf></tr>";
+      ($prev_artist, $prev_album) = ($artist, $album);
+      $dummy = 4;
+   
+     
+     }
+
+}
